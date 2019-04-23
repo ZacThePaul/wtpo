@@ -1,0 +1,34 @@
+version: '3.3'
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - ./db_data:/var/lib/mysql
+    restart: always
+    ports:
+      - "33061:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: wtpouser
+      MYSQL_DATABASE: wtpo
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: wtpouser
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    volumes:
+      - ./../wtpo/:/var/www/html
+      - ./uploads.ini:/usr/local/etc/php/conf.d/uploads.ini
+    ports:
+      - "8000:80"
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: wtpouser
+
+volumes:
+  db_data:
+  uploads.ini:
